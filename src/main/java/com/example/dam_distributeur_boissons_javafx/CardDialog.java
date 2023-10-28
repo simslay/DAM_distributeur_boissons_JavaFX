@@ -11,12 +11,14 @@ import javafx.util.Callback;
 
 public class CardDialog extends Dialog<Price> {
     private Price price;
+    private double priceToDisplay;
     private GridPane gpCode;
 
-    public CardDialog(Price price) {
+    public CardDialog(Price price, double priceToDisplay) {
         super();
         this.setTitle("Enter code");
         this.price = price;
+        this.priceToDisplay = priceToDisplay;
         buildUI();
         setPropertyBindings();
         setResultConverter();
@@ -41,7 +43,9 @@ public class CardDialog extends Dialog<Price> {
                 return true;
             }
         });
-        getDialogPane().expandableContentProperty().set(new Label("Entrez votre code s'il vous plaît."));
+        getDialogPane().expandableContentProperty().set(
+                new Label("Entrez votre code (montant à payer : " + this.priceToDisplay + " €).")
+        );
         getDialogPane().setExpanded(true);
     }
 
@@ -105,5 +109,13 @@ public class CardDialog extends Dialog<Price> {
 
     public void setPrice(Price price) {
         this.price = price;
+    }
+
+    public double getPriceToDisplay() {
+        return priceToDisplay;
+    }
+
+    public void setPriceToDisplay(double priceToDisplay) {
+        this.priceToDisplay = priceToDisplay;
     }
 }
