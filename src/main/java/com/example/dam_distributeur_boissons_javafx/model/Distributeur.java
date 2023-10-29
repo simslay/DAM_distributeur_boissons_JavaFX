@@ -1,9 +1,9 @@
-package com.example.dam_distributeur_boissons_javafx.distributeur;
+package com.example.dam_distributeur_boissons_javafx.model;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Distributeur {
+public class Distributeur implements IDistributeur {
     private Map<Boisson, Integer> boissonsQuantites = new HashMap<>();
     private List<Boisson> boissons = new ArrayList<>();
     private int total = 0;
@@ -12,7 +12,6 @@ public class Distributeur {
     private Boisson boissonSelectionnee;
 
     public Distributeur() {
-        createBoissons();
     }
 
     public Distributeur(Map<Boisson, Integer> boissonsQuantites) {
@@ -38,7 +37,8 @@ public class Distributeur {
         return boissons.stream().filter(Boisson::isFroide).collect(Collectors.toList());
     }
 
-    private void createBoissons() {
+    @Override
+    public void createBoissons() {
         Boisson b1 = new Boisson();
         Boisson b2 = new Boisson();
         Boisson b3 = new Boisson();
@@ -102,9 +102,6 @@ public class Distributeur {
 
     public static Map<String, Integer> createPrix(List<Boisson> boissons) {
         Map<String, Integer> prix = new HashMap<>();
-
-//        for (Boisson b : boissons)
-//            prix.put(b.getMarque(), b.getPrix());
 
         boissons.forEach(b -> prix.put(b.getMarque(), b.getPrix()));
 

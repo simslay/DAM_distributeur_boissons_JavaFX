@@ -1,5 +1,6 @@
-package com.example.dam_distributeur_boissons_javafx;
+package com.example.dam_distributeur_boissons_javafx.ui;
 
+import com.example.dam_distributeur_boissons_javafx.model.Price;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;

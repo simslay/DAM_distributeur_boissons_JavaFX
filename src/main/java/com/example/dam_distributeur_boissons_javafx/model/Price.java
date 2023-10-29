@@ -1,4 +1,4 @@
-package com.example.dam_distributeur_boissons_javafx;
+package com.example.dam_distributeur_boissons_javafx.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

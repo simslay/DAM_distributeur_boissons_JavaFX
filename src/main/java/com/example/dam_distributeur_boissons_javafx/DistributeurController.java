@@ -1,7 +1,10 @@
 package com.example.dam_distributeur_boissons_javafx;
 
-import com.example.dam_distributeur_boissons_javafx.distributeur.Boisson;
-import com.example.dam_distributeur_boissons_javafx.distributeur.Distributeur;
+import com.example.dam_distributeur_boissons_javafx.model.Boisson;
+import com.example.dam_distributeur_boissons_javafx.model.Distributeur;
+import com.example.dam_distributeur_boissons_javafx.model.Price;
+import com.example.dam_distributeur_boissons_javafx.ui.CardDialog;
+import com.example.dam_distributeur_boissons_javafx.ui.PriceDialog;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,6 +18,7 @@ import java.net.URL;
 import java.util.*;
 
 public class DistributeurController implements Initializable {
+    /** FXML attributes */
     @FXML
     private Label lblSortie;
     @FXML
@@ -36,6 +40,7 @@ public class DistributeurController implements Initializable {
     @FXML
     private GridPane gpListeBoissons;
 
+    /** Java UI attributes */
     private final Button b1 = new Button("1");
     private final Button b2 = new Button("2");
     private final Button b3 = new Button("3");
@@ -47,6 +52,16 @@ public class DistributeurController implements Initializable {
     private final Button b9 = new Button("9");
     private final List<Button> buttons = new ArrayList<>();
 
+    /** Model attributes */
+    private Distributeur distributeur;
+    private List<Boisson> boissons;
+    private Map<Boisson, Integer> boissonsQuantites;
+
+    /** Constants attributes */
+    private final String moneyBackText = "Monaie rendue : ";
+    private final String totalText = "Total : ";
+    private final String sortieBoissonsText = "Sortie boissons : ";
+    private final String boissonText = "Boisson : ";
     private final String[] marques = {
             "Coca",
             "Lipton_logo",
@@ -60,113 +75,27 @@ public class DistributeurController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        List<Boisson> boissons;
-        Map<Boisson, Integer> boissonsQuantites;
-        Distributeur distributeur = new Distributeur();
-        Dialog<Price> priceDialog = new PriceDialog(new Price("0"));
-        String moneyBackText = "Monaie rendue : ";
-        String totalText = "Total : ";
-        String sortieBoissonsText = "Sortie boissons : ";
-        String boissonText = "Boisson : ";
+        init();
+        setOnActions();
+    }
 
+    private void init() {
+        distributeur = new Distributeur();
         boissons = distributeur.getBoissons();
         boissonsQuantites = distributeur.getBoissonsQuantites();
 
-        initButtons(distributeur, boissons);
-
-        updateBoissonsGrid(boissons, boissonsQuantites, false);
+        distributeur.createBoissons();
+        initButtons();
+        updateBoissonsGrid(false);
 
         lblTotal.setText(totalText + distributeur.getTotal());
         lblNum.setText(boissonText + distributeur.getNumBoisson());
         lblMoneyBack.setText(moneyBackText + distributeur.getMoneyBack());
 
         cbListeBoissons.setItems(FXCollections.observableList(boissons.stream().toList()));
-
-        btnPieces.setOnAction(e -> {
-            Optional<Price> result = priceDialog.showAndWait();
-            if (result.isPresent()) {
-                Price price = result.get();
-                int total = Integer.parseInt(price.getPrice());
-                int moneyBack = distributeur.getMoneyBack();
-                distributeur.setTotal(total);
-                btnPaiement.setText("Choisir boisson");
-                lblTotal.setText(totalText + convertCentsToEuros(total) + " €");
-//                lblMoneyBack.setText(moneyBackText + moneyBack);
-            }
-        });
-
-        btnCarte.setOnAction(e -> {
-            cardPayment(distributeur, boissons, boissonsQuantites, totalText, sortieBoissonsText);
-        });
-
-        btnPaiement.setOnAction(e -> {
-            coinsPayment(distributeur, boissons, boissonsQuantites, moneyBackText, totalText, sortieBoissonsText);
-        });
     }
 
-    private void cardPayment(
-            Distributeur distributeur,
-            List<Boisson> boissons,
-            Map<Boisson, Integer> boissonsQuantites,
-            String totalText,
-            String sortieBoissonsText
-    ) {
-        if (distributeur.getNumBoisson() != 0) {
-            int total = distributeur.getBoissonSelectionnee().getPrix();
-            CardDialog cardDialog = new CardDialog(new Price(String.valueOf(total)), convertCentsToEuros(total));
-            Optional<Price> result;
-
-            cardDialog.setPrice(new Price(String.valueOf(total)));
-            result = cardDialog.showAndWait();
-
-            if (result.isPresent()) {
-                if (total == -1) {
-                    lblTotal.setText(totalText + "erreur");
-                } else {
-                    btnPaiement.setText("Merci !");
-                    distributeur.getBoissonsQuantites().put(
-                            distributeur.getBoissonSelectionnee(),
-                            distributeur.getBoissonsQuantites().get(distributeur.getBoissonSelectionnee()) - 1
-                    );
-                    updateBoissonsGrid(boissons, boissonsQuantites, true);
-                    lblSortie.setText(sortieBoissonsText + distributeur.getBoissonSelectionnee().getMarque());
-                }
-            }
-        }
-    }
-
-    private void coinsPayment(
-            Distributeur distributeur,
-            List<Boisson> boissons,
-            Map<Boisson, Integer> boissonsQuantites,
-            String moneyBackText,
-            String totalText,
-            String sortieBoissonsText
-    ) {
-        if (distributeur.getTotal() != 0) {
-            int total = distributeur.getTotal();
-            int boissonPrice = Objects.requireNonNull(boissons.stream()
-                            .filter(boisson -> distributeur.getNumBoisson() == boisson.getId())
-                            .findAny()
-                            .orElse(null))
-                    .getPrix();
-            int moneyBack = total - boissonPrice;
-
-            distributeur.setMoneyBack(moneyBack);
-            lblMoneyBack.setText(moneyBackText + convertCentsToEuros(moneyBack) + " €");
-            btnPaiement.setText("Merci !");
-            distributeur.setTotal(0);
-            lblTotal.setText(totalText + distributeur.getTotal());
-            distributeur.getBoissonsQuantites().put(
-                    distributeur.getBoissonSelectionnee(),
-                    distributeur.getBoissonsQuantites().get(distributeur.getBoissonSelectionnee()) - 1
-            );
-            updateBoissonsGrid(boissons, boissonsQuantites, true);
-            lblSortie.setText(sortieBoissonsText + distributeur.getBoissonSelectionnee().getMarque());
-        }
-    }
-
-    private void initButtons(Distributeur distributeur, List<Boisson> boissons) {
+    private void initButtons() {
         buttons.add(b1);
         buttons.add(b2);
         buttons.add(b3);
@@ -208,7 +137,7 @@ public class DistributeurController implements Initializable {
         gpDigits.add(b3, 2, 2);
     }
 
-    private void updateBoissonsGrid(List<Boisson> boissons, Map<Boisson, Integer> boissonsQuantites, boolean removeNodes) {
+    private void updateBoissonsGrid(boolean removeNodes) {
         int index = 0;
 
         for (int i = 0; i < 2; i++) {
@@ -243,7 +172,75 @@ public class DistributeurController implements Initializable {
         }
     }
 
-    private double convertCentsToEuros(int price) {
+    private void setOnActions() {
+        btnPieces.setOnAction(e -> insertCoins());
+        btnCarte.setOnAction(e -> cardPayment());
+        btnPaiement.setOnAction(e -> coinsPayment());
+    }
+
+    private void insertCoins() {
+        Dialog<Price> priceDialog = new PriceDialog();
+        Optional<Price> result = priceDialog.showAndWait();
+
+        if (result.isPresent()) {
+            Price price = result.get();
+            int total = Integer.parseInt(price.getPrice());
+
+            distributeur.setTotal(total);
+            btnPaiement.setText("Choisir boisson");
+            lblTotal.setText(totalText + convertCentsToEuros(total) + " €");
+        }
+    }
+
+    private void cardPayment() {
+        if (distributeur.getNumBoisson() != 0) {
+            int total = distributeur.getBoissonSelectionnee().getPrix();
+            CardDialog cardDialog = new CardDialog(new Price(String.valueOf(total)), convertCentsToEuros(total));
+            Optional<Price> result;
+
+            result = cardDialog.showAndWait();
+
+            if (result.isPresent()) {
+                if (total == -1) {
+                    lblTotal.setText(totalText + "erreur");
+                } else {
+                    btnPaiement.setText("Merci !");
+                    distributeur.getBoissonsQuantites().put(
+                            distributeur.getBoissonSelectionnee(),
+                            distributeur.getBoissonsQuantites().get(distributeur.getBoissonSelectionnee()) - 1
+                    );
+                    updateBoissonsGrid(true);
+                    lblSortie.setText(sortieBoissonsText + distributeur.getBoissonSelectionnee().getMarque());
+                }
+            }
+        }
+    }
+
+    private void coinsPayment() {
+        if (distributeur.getTotal() != 0) {
+            int total = distributeur.getTotal();
+            int boissonPrice = Objects.requireNonNull(boissons.stream()
+                            .filter(boisson -> distributeur.getNumBoisson() == boisson.getId())
+                            .findAny()
+                            .orElse(null))
+                    .getPrix();
+            int moneyBack = total - boissonPrice;
+
+            distributeur.setMoneyBack(moneyBack);
+            lblMoneyBack.setText(moneyBackText + convertCentsToEuros(moneyBack) + " €");
+            btnPaiement.setText("Merci !");
+            distributeur.setTotal(0);
+            lblTotal.setText(totalText + distributeur.getTotal());
+            distributeur.getBoissonsQuantites().put(
+                    distributeur.getBoissonSelectionnee(),
+                    distributeur.getBoissonsQuantites().get(distributeur.getBoissonSelectionnee()) - 1
+            );
+            updateBoissonsGrid(true);
+            lblSortie.setText(sortieBoissonsText + distributeur.getBoissonSelectionnee().getMarque());
+        }
+    }
+
+    private static double convertCentsToEuros(int price) {
         return price / 100.0;
     }
 }

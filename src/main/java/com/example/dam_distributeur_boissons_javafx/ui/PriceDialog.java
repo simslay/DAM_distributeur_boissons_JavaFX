@@ -1,27 +1,23 @@
-package com.example.dam_distributeur_boissons_javafx;
+package com.example.dam_distributeur_boissons_javafx.ui;
 
+import com.example.dam_distributeur_boissons_javafx.model.Price;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
-import java.util.Objects;
-
 public class PriceDialog extends Dialog<Price> {
-    private Price price;
+    private final Price price;
     private TextField tfPrice;
 
-    public PriceDialog(Price price) {
+    public PriceDialog() {
         super();
         this.setTitle("Ajouter pieces");
-        this.price = price;
+        this.price = new Price("0");
         buildUI();
         setPropertyBindings();
         setResultConverter();

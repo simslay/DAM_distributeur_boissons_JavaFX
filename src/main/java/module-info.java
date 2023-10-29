@@ -6,4 +6,8 @@ module com.example.dam_distributeur_boissons_javafx {
 
     opens com.example.dam_distributeur_boissons_javafx to javafx.fxml;
     exports com.example.dam_distributeur_boissons_javafx;
+    exports com.example.dam_distributeur_boissons_javafx.ui;
+    opens com.example.dam_distributeur_boissons_javafx.ui to javafx.fxml;
+    exports com.example.dam_distributeur_boissons_javafx.model;
+    opens com.example.dam_distributeur_boissons_javafx.model to javafx.fxml;
 }

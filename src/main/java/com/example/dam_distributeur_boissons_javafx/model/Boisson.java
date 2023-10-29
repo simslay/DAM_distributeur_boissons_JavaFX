@@ -1,6 +1,6 @@
-package com.example.dam_distributeur_boissons_javafx.distributeur;
+package com.example.dam_distributeur_boissons_javafx.model;
 
-public class Boisson {
+public class Boisson implements IBoisson {
     private int id;
     private String marque;
     private String matiere;
@@ -22,6 +22,7 @@ public class Boisson {
         this.couleur = couleur;
     }
 
+    @Override
     public double getVolume() {
         return Math.PI * this.hauteur * (this.diametre/2) * (this.diametre/2);
     }
