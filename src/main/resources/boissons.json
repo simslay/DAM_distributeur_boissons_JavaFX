@@ -1,0 +1,50 @@
+[
+	{
+		"id": 0,
+		"marque": "Coca",
+		"prix": 180,
+		"chaude": false
+	},
+	{
+		"id": 1,
+		"marque": "Lipton",
+		"prix": 100,
+		"chaude": false
+	},
+	{
+		"id": 2,
+		"marque": "Oasis",
+		"prix": 150,
+		"chaude": false
+	},
+	{
+		"id": 3,
+		"marque": "Nespresso",
+		"prix": 80,
+		"chaude": true
+	},
+	{
+		"id": 4,
+		"marque": "Cristaline",
+		"prix": 80,
+		"chaude": false
+	},
+	{
+		"id": 5,
+		"marque": "Schweppes",
+		"prix": 100,
+		"chaude": false
+	},
+	{
+		"id": 6,
+		"marque": "Nesquik",
+		"prix": 80,
+		"chaude": true
+	},
+	{
+		"id": 7,
+		"marque": "Orangina",
+		"prix": 150,
+		"chaude": false
+	}
+]

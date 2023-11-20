@@ -1,0 +1,8 @@
+0,Coca,180,false
+1,Lipton,100,false
+2,Oasis,150,false
+3,Nespresso,80,true
+4,Cristaline,80,false
+5,Schweppes,100,false
+6,Nesquik,80,true
+7,Orangina,150,false
