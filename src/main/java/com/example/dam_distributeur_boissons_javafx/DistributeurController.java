@@ -59,11 +59,11 @@ public class DistributeurController implements Initializable {
     private Map<Boisson, Integer> boissonsQuantites;
 
     /** Constants attributes */
-    private final String moneyBackText = "Monaie rendue : ";
-    private final String totalText = "Total : ";
-    private final String sortieBoissonsText = "Sortie boissons : ";
-    private final String boissonText = "Boisson : ";
-    private final String[] marques = {
+    private final String MONEY_BACK_TEXT = "Monaie rendue : ";
+    private final String TOTAL_TEXT = "Total : ";
+    private final String SORTIE_BOISSONS_TEXT = "Sortie boissons : ";
+    private final String BOISSON_TEXT = "Boisson : ";
+    private final String[] MARQUES = {
             "Coca",
             "Lipton_logo",
             "Logo-oasis",
@@ -91,9 +91,9 @@ public class DistributeurController implements Initializable {
         initButtons();
         updateBoissonsGrid(false);
 
-        lblTotal.setText(totalText + distributeur.getTotal());
-        lblNum.setText(boissonText + distributeur.getNumBoisson());
-        lblMoneyBack.setText(moneyBackText + distributeur.getMoneyBack());
+        lblTotal.setText(TOTAL_TEXT + distributeur.getTotal());
+        lblNum.setText(BOISSON_TEXT + distributeur.getNumBoisson());
+        lblMoneyBack.setText(MONEY_BACK_TEXT + distributeur.getMoneyBack());
 
         cbListeBoissons.setItems(FXCollections.observableList(boissons.stream().toList()));
     }
@@ -153,7 +153,7 @@ public class DistributeurController implements Initializable {
                                 + convertCentsToEuros(b.getPrix()) + " €"
                 );
                 ImageView imageView = new ImageView(new Image(
-                        Objects.requireNonNull(getClass().getResourceAsStream("/" + marques[index] + ".png")),
+                        Objects.requireNonNull(getClass().getResourceAsStream("/" + MARQUES[index] + ".png")),
                         50,
                         50,
                         false,
@@ -191,7 +191,7 @@ public class DistributeurController implements Initializable {
 
             distributeur.setTotal(total);
             btnPaiement.setText("Choisir boisson");
-            lblTotal.setText(totalText + convertCentsToEuros(total) + " €");
+            lblTotal.setText(TOTAL_TEXT + convertCentsToEuros(total) + " €");
         }
     }
 
@@ -205,7 +205,7 @@ public class DistributeurController implements Initializable {
 
             if (result.isPresent()) {
                 if (total == -1) {
-                    lblTotal.setText(totalText + "erreur");
+                    lblTotal.setText(TOTAL_TEXT + "erreur");
                 } else {
                     btnPaiement.setText("Merci !");
                     distributeur.getBoissonsQuantites().put(
@@ -213,7 +213,7 @@ public class DistributeurController implements Initializable {
                             distributeur.getBoissonsQuantites().get(distributeur.getBoissonSelectionnee()) - 1
                     );
                     updateBoissonsGrid(true);
-                    lblSortie.setText(sortieBoissonsText + distributeur.getBoissonSelectionnee().getMarque());
+                    lblSortie.setText(SORTIE_BOISSONS_TEXT + distributeur.getBoissonSelectionnee().getMarque());
                 }
             }
         }
@@ -230,16 +230,16 @@ public class DistributeurController implements Initializable {
             int moneyBack = total - boissonPrice;
 
             distributeur.setMoneyBack(moneyBack);
-            lblMoneyBack.setText(moneyBackText + convertCentsToEuros(moneyBack) + " €");
+            lblMoneyBack.setText(MONEY_BACK_TEXT + convertCentsToEuros(moneyBack) + " €");
             btnPaiement.setText("Merci !");
             distributeur.setTotal(0);
-            lblTotal.setText(totalText + distributeur.getTotal());
+            lblTotal.setText(TOTAL_TEXT + distributeur.getTotal());
             distributeur.getBoissonsQuantites().put(
                     distributeur.getBoissonSelectionnee(),
                     distributeur.getBoissonsQuantites().get(distributeur.getBoissonSelectionnee()) - 1
             );
             updateBoissonsGrid(true);
-            lblSortie.setText(sortieBoissonsText + distributeur.getBoissonSelectionnee().getMarque());
+            lblSortie.setText(SORTIE_BOISSONS_TEXT + distributeur.getBoissonSelectionnee().getMarque());
         }
     }
 
