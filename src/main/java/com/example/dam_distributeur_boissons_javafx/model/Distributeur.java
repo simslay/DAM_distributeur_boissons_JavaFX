@@ -1,5 +1,10 @@
 package com.example.dam_distributeur_boissons_javafx.model;
 
+import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONTokener;
+
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,6 +40,58 @@ public class Distributeur implements IDistributeur {
 
     public List<Boisson> getBoissonsFroides() {
         return boissons.stream().filter(Boisson::isFroide).collect(Collectors.toList());
+    }
+
+    public void createBoissonsFromDiskJSON() {
+        InputStream inputStream = getClass().getResourceAsStream("/boissons.json");
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+        JSONTokener jsonTokener = new JSONTokener(bufferedReader);
+        JSONArray jsonArray = new JSONArray(jsonTokener);
+
+        for(Object o : jsonArray) {
+            JSONObject jsonObject = (JSONObject) o;
+            Boisson b = new Boisson();
+
+            b.setId(jsonObject.getInt("id"));
+            b.setMarque(jsonObject.getString("marque"));
+            b.setPrix(jsonObject.getInt("prix"));
+            b.setChaude(jsonObject.getBoolean("chaude"));
+
+            boissons.add(b);
+            boissonsQuantites.put(b, 10);
+        }
+    }
+
+    public void createBoissonsFromDisk() throws IOException {
+        InputStream inputStream = getClass().getResourceAsStream("/boissons.txt");
+
+        if (inputStream != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                String l;
+
+                while ((l = reader.readLine()) != null) {
+                    Boisson b = new Boisson();
+                    String[] properties = l.split(",");
+
+                    b.setId(Integer.parseInt(properties[0]));
+                    b.setMarque(properties[1]);
+                    b.setPrix(Integer.parseInt(properties[2]));
+                    b.setChaude(Boolean.parseBoolean(properties[3]));
+
+                    boissons.add(b);
+                    boissonsQuantites.put(b, 10);
+                }
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+            finally {
+                inputStream.close();
+            }
+        } else {
+            System.err.println("Le fichier n'a pas été trouvé dans les ressources.");
+        }
     }
 
     @Override
@@ -158,6 +215,7 @@ public class Distributeur implements IDistributeur {
 
     /**
      * Redefinition de toString()
+     *
      * @return
      */
     @Override
@@ -176,7 +234,7 @@ public class Distributeur implements IDistributeur {
 //            res.append("\n");
         });
 
-        res.deleteCharAt(res.length()-1);
+        res.deleteCharAt(res.length() - 1);
 
         return res.toString();
     }

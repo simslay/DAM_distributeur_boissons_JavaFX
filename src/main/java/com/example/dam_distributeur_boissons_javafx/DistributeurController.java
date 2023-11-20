@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -84,7 +85,9 @@ public class DistributeurController implements Initializable {
         boissons = distributeur.getBoissons();
         boissonsQuantites = distributeur.getBoissonsQuantites();
 
-        distributeur.createBoissons();
+//        distributeur.createBoissons();
+        //            distributeur.createBoissonsFromDisk();
+        distributeur.createBoissonsFromDiskJSON();
         initButtons();
         updateBoissonsGrid(false);
 

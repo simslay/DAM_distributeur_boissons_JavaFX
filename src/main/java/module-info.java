@@ -4,6 +4,8 @@ module com.example.dam_distributeur_boissons_javafx {
 
     requires org.controlsfx.controls;
 
+    requires org.json;
+
     opens com.example.dam_distributeur_boissons_javafx to javafx.fxml;
     exports com.example.dam_distributeur_boissons_javafx;
     exports com.example.dam_distributeur_boissons_javafx.ui;
