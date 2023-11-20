@@ -86,7 +86,7 @@ public class DistributeurController implements Initializable {
         boissonsQuantites = distributeur.getBoissonsQuantites();
 
 //        distributeur.createBoissons();
-        //            distributeur.createBoissonsFromDisk();
+//        distributeur.createBoissonsFromDisk();
         distributeur.createBoissonsFromDiskJSON();
         initButtons();
         updateBoissonsGrid(false);
